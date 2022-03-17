@@ -1,0 +1,48 @@
+module.exports = {
+  root: true,
+  parser: '@typescript-eslint/parser',
+
+  extends: ['plugin:@typescript-eslint/eslint-recommended', 'plugin:@typescript-eslint/recommended', 'plugin:security/recommended', 'prettier'],
+  plugins: ['security', 'simple-import-sort', 'prettier'],
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
+  ignorePatterns: ['**/*.d.ts', '**/*.graphql', 'config/*', 'dist/*', 'coverage/*', 'docs/*', 'src/types/', 'src/generated/*', 'node_modules/*'],
+  rules: {
+    'prettier/prettier': [
+      'error',
+      {
+        printWidth: 180,
+        tabWidth: 2,
+        useTabs: false,
+        semi: true,
+        singleQuote: true,
+        trailingComma: 'all',
+        bracketSpacing: true,
+        jsxBracketSameLine: false,
+        arrowParens: 'always',
+      },
+    ],
+    'arrow-body-style': 'off',
+    'prefer-arrow-callback': 'off',
+    'object-curly-spacing': ['error', 'always'],
+    camelcase: 'off',
+    'no-console': 'error',
+    'require-jsdoc': 0,
+    '@typescript-eslint/no-var-requires': 0,
+    '@typescript-eslint/indent': ['error', 2],
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/camelcase': 'off',
+    '@typescript-eslint/interface-name-prefix': 'off',
+    '@typescript-eslint/ban-ts-ignore': 'off',
+    'security/detect-child-process': 'off',
+    'security/detect-object-injection': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
+
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
+  },
+};
