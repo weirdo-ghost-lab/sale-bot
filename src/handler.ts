@@ -55,13 +55,14 @@ export const handleTxn = async (txnHash: string): Promise<Order | null> => {
     }
   }
   // Multiple token Sale
-  else if (transferLogs.length > 1) {
+  else if (tokenIds.length > 1) {
+    // TODO: this is wrong, need fix
     const sellerAdds = transferLogs.map((l) => l.topics[1]);
     const txnDetail = await web3.eth.getTransaction(txnHash);
     if (Number(txnDetail.value) !== 0 && txnDetail.to !== null && Number(txnDetail.to) !== 0) {
       return {
         type: 'multiple',
-        buyerAddress: txnDetail.to,
+        buyerAddress: txnDetail.from,
         sellerAddress: sellerAdds,
         tokenId: tokenIds,
         valueGwei: txnDetail.value,
