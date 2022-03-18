@@ -53,7 +53,8 @@ export const handleTxn = async (txnHash: string): Promise<Order | null> => {
   }
   // Multiple token Sale
   else if (transferLogs.length > 1) {
-    const tokenIds = transferLogs.map((l) => l.topics[3]);
+    // dedup as some sweep contract will transfer same token for twice.
+    const tokenIds = [...new Set(transferLogs.map((l) => l.topics[3]))];
     const sellerAdds = transferLogs.map((l) => l.topics[1]);
     const txnDetail = await web3.eth.getTransaction(txnHash);
     if (Number(txnDetail.value) !== 0 && txnDetail.to !== null && Number(txnDetail.to) !== 0) {
