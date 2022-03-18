@@ -7,9 +7,12 @@ export const handleTxn = async (txnHash: string): Promise<Order | null> => {
   const transferLogs = receipt.logs.filter((l) => l.topics[0] === erc721TransferEventHash && l.address.toLowerCase() === '0x9401518f4ebba857baa879d9f76e1cc8b31ed197');
   const osOrderMatchLogs = receipt.logs.filter((l) => l.topics[0] === openSeaOrderMatchEventHash);
 
+  // dedup as some sweep contract will transfer same token for twice.
+  const tokenIds = [...new Set(transferLogs.map((l) => l.topics[3]))];
+
   // Single token Sale
-  if (transferLogs.length === 1) {
-    const tokenId = transferLogs[0].topics[3];
+  if (tokenIds.length === 1) {
+    const tokenId = tokenIds[0];
 
     // Sold on Opensea
     if (osOrderMatchLogs.length === 1) {
@@ -53,8 +56,6 @@ export const handleTxn = async (txnHash: string): Promise<Order | null> => {
   }
   // Multiple token Sale
   else if (transferLogs.length > 1) {
-    // dedup as some sweep contract will transfer same token for twice.
-    const tokenIds = [...new Set(transferLogs.map((l) => l.topics[3]))];
     const sellerAdds = transferLogs.map((l) => l.topics[1]);
     const txnDetail = await web3.eth.getTransaction(txnHash);
     if (Number(txnDetail.value) !== 0 && txnDetail.to !== null && Number(txnDetail.to) !== 0) {
