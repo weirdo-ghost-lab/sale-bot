@@ -1,9 +1,29 @@
+import AsyncRetry from 'async-retry';
+
 import { erc721TransferEventHash, openSeaOrderMatchEventAbi, openSeaOrderMatchEventHash } from './constants/abis';
 import { Order } from './typings';
 import { web3 } from './utils/web3';
 
 export const handleTxn = async (txnHash: string): Promise<Order | null> => {
-  const receipt = await web3.eth.getTransactionReceipt(txnHash);
+  const receipt = await AsyncRetry(
+    async () => {
+      // type is wrong as it sometimes return null
+      const resp = await web3.eth.getTransactionReceipt(txnHash);
+      if (!resp) {
+        throw Error('null returned');
+      }
+      return resp;
+    },
+    {
+      retries: 3,
+      minTimeout: 3000,
+      maxTimeout: 5000,
+      onRetry: (_, t) => {
+        // eslint-disable-next-line no-console
+        console.log(`Retrying ${t} getTransactionReceipt with ${txnHash}`);
+      },
+    },
+  );
   const transferLogs = receipt.logs.filter((l) => l.topics[0] === erc721TransferEventHash && l.address.toLowerCase() === '0x9401518f4ebba857baa879d9f76e1cc8b31ed197');
   const osOrderMatchLogs = receipt.logs.filter((l) => l.topics[0] === openSeaOrderMatchEventHash);
 

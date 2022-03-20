@@ -21,6 +21,7 @@
   },
   "cSpell.words": [
   ],
+  "eslint.packageManager": "npm",
   "eslint.debug": true,
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
