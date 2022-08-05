@@ -65,8 +65,8 @@ export const handleTxn = async (txnHash: string): Promise<Order | null> => {
       if (Number(txnDetail.value) !== 0 && txnDetail.to !== null && Number(txnDetail.to) !== 0) {
         return {
           type: 'single',
-          buyerAddress: txnDetail.to,
-          sellerAddress: txnDetail.from,
+          buyerAddress: txnDetail.from,
+          sellerAddress: txnDetail.to,
           tokenId: tokenId,
           valueGwei: txnDetail.value,
           form: 'buy',
